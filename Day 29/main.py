@@ -20,9 +20,9 @@ def generate_password():
     new_password += r_char
   p_entry.insert(0, new_password)
   pyperclip.copy(new_password)
-.
+
 def add():
-  f = open("paswords.txt", "a")
+  f = open("Day 29\paswords.txt", "a")
   website = w_entry.get()
   user = e_entry.get()
   password = p_entry.get()
@@ -46,7 +46,7 @@ screen.title("Password Manager")
 screen.configure(padx=20, pady=20)
 
 canvas = Canvas(width=200, height=200, highlightthickness=0)
-lock_logo =  PhotoImage(file="logo.png")
+lock_logo =  PhotoImage(file="Day 29\logo.png")
 
 canvas.create_image(100, 100, image=lock_logo)
 canvas.grid(row=0, column=1)
