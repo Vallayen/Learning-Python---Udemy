@@ -3,42 +3,64 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
 '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/']
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
-
-# ---------------------------- SAVE PASSWORD ------------------------------- #
 def generate_password():
   if len(p_entry.get()) > 0:
     p_entry.delete(0, END)
   new_password = ""
-  for x in range(15):
+  for _ in range(15):
     r_char = random.choice(CHARS)
     new_password += r_char
   p_entry.insert(0, new_password)
   pyperclip.copy(new_password)
 
+# ---------------------------- SAVE PASSWORD ------------------------------- #
+
 def add():
-  f = open("Day 29\paswords.txt", "a")
   website = w_entry.get()
   user = e_entry.get()
   password = p_entry.get()
   x = len(user)
   y = len(password)
-  if x >= 1 and y >= 1:
-    is_ok = messagebox.askokcancel(title=website, message=f"Is this correct? \nEmail: {user} \nPassword: {password}")
+  new_data = {
+    website: {
+      "user": user,
+        "password": password,
+    }
+  }
     
-    if is_ok:
-      f.write(f"{website} // {user} // {password} \n")
-      f.close()
-      w_entry.delete(0, END)
-      p_entry.delete(0, END)
-  else:
-    messagebox.showinfo(title="Error", message="You must include both a username/email and a password")
+  if not user or not password:
+        messagebox.showinfo(title="Error", message="You must include both a username/email and a password")
+        return
 
+  file_path = r"Day 29\paswords.json"  # Use raw string for file path
+
+  try:
+    if os.path.exists(file_path):
+        with open(file_path, "r") as file:
+            # Load existing data
+            data = json.load(file)
+    else:
+        data = {}
+            
+    # Update data with new entry
+    data.update(new_data)
+        
+    with open(file_path, "w") as file:
+        # Save updated data
+        json.dump(data, file, indent=4)
+        
+    w_entry.delete(0, END)
+    p_entry.delete(0, END)
+
+  except Exception as e:
+    messagebox.showinfo(title="Error", message=f"An error occurred: {e}")
 
 # ---------------------------- UI SETUP ------------------------------- #
 screen = Tk()
